@@ -1,0 +1,102 @@
+# Archivos específicos del proyecto
+proyecto-eventos-discretos.pdf
+temas-simulacion.pdf
+
+# Directorios específicos
+.sixth/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.classpath
+.c9/
+*.sublime-project
+*.sublime-workspace
+.vim/
+
+# Bases de datos
+*.db
+*.sqlite
+*.sqlite3
+
+# Archivos de sistema operativo
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+*.log
+*.out
+
+# Directorios de caché
+.cache/
+.pytest_cache/
+.tox/
+.coverage
+
+# Archivos de configuración local
+.env
+.env.local
+.env.*.local
+config.local.js
+
+# Archivos de compilación
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+*.dll
+
+# Variables de entorno y secretos
+.env
+.env.example
+secrets/
+*.pem
+*.key
+
+# Directorios de compilación comunes
+build/
+dist/
+target/
+out/
