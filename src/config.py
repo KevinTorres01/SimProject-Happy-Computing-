@@ -1,20 +1,9 @@
 """
 Configuracion de la simulacion de Happy Computing.
-
-Incluye un enum para las 3 interpretaciones del enunciado
-'distribuye Poisson con lambda=20 minutos'.
 """
 
 from dataclasses import dataclass, field
-from enum import Enum
 from typing import List
-
-
-class ArrivalInterpretation(Enum):
-    """Tres interpretaciones de 'distribuye Poisson con lambda=20'."""
-    EXPONENTIAL_MEAN_20 = "A"       # Exp(1/20), media=20 min
-    EXPONENTIAL_RATE_20 = "B"       # Exp(20), media=1/20 min = 3 seg
-    POISSON_DISCRETE_20 = "C"       # Poisson(20), media=20 min (entero)
 
 
 @dataclass
@@ -24,10 +13,7 @@ class HappyConfig:
     # Duracion de la jornada laboral (minutos)
     total_time: float = 480.0   # 8 horas
 
-    # Interpretacion del arribo de clientes
-    arrival_interpretation: ArrivalInterpretation = ArrivalInterpretation.EXPONENTIAL_MEAN_20
-
-    # Parametro lambda del enunciado (minutos)
+    # Media del tiempo inter-arribo en minutos (proceso de Poisson => Exponencial)
     arrival_lambda: float = 20.0
 
     # Probabilidades de tipo de servicio [garantia, pago, cambio, venta]

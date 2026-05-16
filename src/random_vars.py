@@ -56,24 +56,6 @@ def normal(mu: float, sigma: float) -> float:
     return mu + sigma * z
 
 
-def categorical(probabilities: list) -> int:
-    """
-    Genera una variable aleatoria categorica (discreta).
-
-    probabilities: lista de probabilidades [p0, p1, ..., pk]
-    Retorna el indice i seleccionado con probabilidad p_i.
-    Usa el metodo de la transformada inversa para distribuciones discretas.
-    Seccion 2.1 del libro.
-    """
-    u = random.random()
-    cumulative = 0.0
-    for i, p in enumerate(probabilities):
-        cumulative += p
-        if u < cumulative:
-            return i
-    return len(probabilities) - 1
-
-
 def poisson_variate(lam: float) -> int:
     """
     Genera una variable aleatoria Poisson con parametro lam.
@@ -90,5 +72,23 @@ def poisson_variate(lam: float) -> int:
         p *= random.random()
         if p < L:
             return k - 1
+
+
+def categorical(probabilities: list) -> int:
+    """
+    Genera una variable aleatoria categorica (discreta).
+
+    probabilities: lista de probabilidades [p0, p1, ..., pk]
+    Retorna el indice i seleccionado con probabilidad p_i.
+    Usa el metodo de la transformada inversa para distribuciones discretas.
+    Seccion 2.1 del libro.
+    """
+    u = random.random()
+    cumulative = 0.0
+    for i, p in enumerate(probabilities):
+        cumulative += p
+        if u < cumulative:
+            return i
+    return len(probabilities) - 1
 
 

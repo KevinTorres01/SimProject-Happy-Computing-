@@ -11,8 +11,8 @@ from typing import List, Optional
 from collections import deque
 from enum import IntEnum
 
-from src.random_vars import exponential, normal, categorical, poisson_variate
-from src.config import HappyConfig, ArrivalInterpretation
+from src.random_vars import exponential, normal, categorical
+from src.config import HappyConfig
 
 # Tipos de servicio
 class ServiceType(IntEnum):
@@ -198,21 +198,8 @@ class HappyComputingModel:
     # --- Generacion de llegadas ---
 
     def _generate_inter_arrival(self) -> float:
-        """Genera tiempo inter-arribo segun la interpretacion configurada."""
-        interp = self.config.arrival_interpretation
-        lam = self.config.arrival_lambda
-
-        if interp == ArrivalInterpretation.EXPONENTIAL_MEAN_20:
-            # Interpretacion A: Exponencial con media = lam minutos
-            return exponential(1.0 / lam)
-
-        elif interp == ArrivalInterpretation.EXPONENTIAL_RATE_20:
-            # Interpretacion B: Exponencial con tasa = lam por minuto
-            return exponential(lam)
-
-        elif interp == ArrivalInterpretation.POISSON_DISCRETE_20:
-            # Interpretacion C: Poisson(lam) discreto, minutos enteros
-            return max(0.01, poisson_variate(lam))
+        """Genera tiempo inter-arribo: proceso de Poisson => Exponencial(media=lambda min)."""
+        return exponential(1.0 / self.config.arrival_lambda)
 
     # --- Handlers de eventos ---
 
