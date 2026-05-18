@@ -152,7 +152,7 @@ class HappyComputingModel:
         # Contadores
         self.n_arrivals = 0
         self.n_departures = 0
-        self.total_revenue = 0.0
+        self.total_revenue = 0.0  # se usa en finalize()
 
         # Empleados
         self.vendedores: List[Vendedor] = []
@@ -183,8 +183,12 @@ class HappyComputingModel:
             engine.schedule_event(inter, ARRIVAL)
 
     def should_continue(self, event) -> bool:
-        """Continuar mientras el evento este dentro de la jornada."""
-        return event.time <= self.config.total_time
+        """Solo bloquear nuevas llegadas despues de la jornada.
+        Los clientes ya en el sistema se atienden hasta completar su servicio
+        (Seccion 3.2 del libro: 'todos los clientes que ya estaban dentro deberan ser atendidos')."""
+        if event.event_type == ARRIVAL and event.time > self.config.total_time:
+            return False
+        return True
 
     def handle_event(self, engine, event):
         """Despacha el evento al handler correspondiente."""
@@ -198,7 +202,8 @@ class HappyComputingModel:
     # --- Generacion de llegadas ---
 
     def _generate_inter_arrival(self) -> float:
-        """Genera tiempo inter-arribo: proceso de Poisson => Exponencial(media=lambda min)."""
+        """Genera tiempo inter-arribo: Exponencial(media = lambda).
+        Segun Seccion 2.4.1 del libro, un Proceso Poisson tiene inter-arribos exponenciales."""
         return exponential(1.0 / self.config.arrival_lambda)
 
     # --- Handlers de eventos ---
@@ -297,10 +302,15 @@ class HappyComputingModel:
 
     def _start_vendedor_service(self, engine, vendedor: Vendedor, customer: Customer):
         vendedor.assign(customer, engine.clock)
-        service_time = max(0.1, normal(
+        service_time = normal(
             self.config.vendedor_service_mean,
             self.config.vendedor_service_std
-        ))
+        )
+        while service_time <= 0:
+            service_time = normal(
+                self.config.vendedor_service_mean,
+                self.config.vendedor_service_std
+            )
         engine.schedule_event(
             engine.clock + service_time,
             VENDEDOR_DONE,
@@ -366,8 +376,6 @@ class HappyComputingModel:
         """Calcula y retorna las metricas finales."""
         served = [c for c in self.customers if c.departure_time is not None]
 
-        total_revenue = sum(c.price for c in served)
-
         wait_times = [c.total_wait_time for c in served]
         avg_wait = sum(wait_times) / len(wait_times) if wait_times else 0.0
 
@@ -385,7 +393,7 @@ class HappyComputingModel:
         return {
             "total_arrivals": self.n_arrivals,
             "total_served": self.n_departures,
-            "total_revenue": total_revenue,
+            "total_revenue": self.total_revenue,
             "avg_wait_time": avg_wait,
             "avg_system_time": avg_system,
             "type_counts": type_counts,
